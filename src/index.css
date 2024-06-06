@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes feedback-green {
+  0% {
+    background: radial-gradient(circle, rgba(0, 255, 0, 0.4) 0%, rgba(0, 255, 0, 0) 0%);
+  }
+  100% {
+    background: radial-gradient(circle, rgba(0, 255, 0, 0.4) 100%, rgba(0, 255, 0, 0) 100%);
+  }
+}
+
+@keyframes feedback-orange {
+  0% {
+    background: radial-gradient(circle, rgba(255, 165, 0, 0.4) 0%, rgba(255, 165, 0, 0) 0%);
+    
+  }
+  100% {
+    background: radial-gradient(circle, rgba(255, 165, 0, 0.4) 100%, rgba(255, 165, 0, 0) 100%);
+    
+  }
+}
+
+@keyframes feedback-red {
+  0% {
+   
+    background: radial-gradient(circle, rgba(255, 0, 0, 0.4) 0%, rgba(255, 0, 0, 0) 0%);
+  }
+  100% {
+   
+    background: radial-gradient(circle, rgba(255, 0, 0, 0.4) 100%, rgba(255, 0, 0, 0) 100%);
+  }
+}
+
+.animate-feedback-green {
+  animation: feedback-green 3s ease-in-out forwards;
+  
+}
+
+.animate-feedback-orange {
+  animation: feedback-orange 3s ease-in-out forwards;
+}
+
+.animate-feedback-red {
+  animation: feedback-red 3s ease-in-out forwards;
+}
