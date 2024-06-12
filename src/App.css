@@ -1,6 +1,18 @@
 html, body {
   height: 100%;
-  font-family: 'Short Stack', sans-serif;
+  font-family: 'Poppins', sans-serif;
+}
+
+:root {
+  --bg-gradient-opacity: 0.50;
+}
+
+.bg-gradient {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 184, 60, var(--bg-gradient-opacity)),
+    rgba(255, 235, 113, var(--bg-gradient-opacity))
+  );
 }
 
 

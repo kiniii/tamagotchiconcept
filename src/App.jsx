@@ -108,9 +108,9 @@ function App() {
   return (
     <HardwareInput dataPackage={dataPackage} setDataPackage={setDataPackage}>
       <div
-        className={`min-h-screen h-full bg-gradient-to-b from-[#FFB83C] to-[#FFEB71] ${animationFeedback}`}
+        className={`min-h-screen h-full bg-gradient ${animationFeedback}`}
       >
-        <div className="text-4xl text-center pt-24 text-[#49437C]">
+        <div className="text-4xl text-center pt-16 text-[#2c2756]">
           <h1>Every answer makes me feel better.</h1>
           <h1>Help me be joyful!</h1>
         </div>
@@ -121,6 +121,10 @@ function App() {
             alt="mascot"
             className="max-h-md"
           />
+        </div>
+        
+        <div className="text-4xl text-center pb-10 text-[#2c2756]">
+          <h1>Work makes me feel stressed</h1>
         </div>
 
         <div className="flex justify-center gap-28">
@@ -136,7 +140,6 @@ function App() {
             className="bg-[#49437C] text-white px-8 py-2 rounded-xl font-light text-xl"
             onClick={() => {
               handleClick("animate-feedback-orange");
-              
             }}
           >
             Neutral
@@ -145,7 +148,6 @@ function App() {
             className="bg-[#49437C] text-white px-8 py-2 rounded-xl font-light text-xl"
             onClick={() => {
               handleClick("animate-feedback-green");
-              
             }}
           >
             Yes
