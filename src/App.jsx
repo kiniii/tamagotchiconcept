@@ -7,8 +7,6 @@ function App() {
   // States and timer
   const [expressionIndex, setExpressionIndex] = useState(0);
   const [dataPackage, setDataPackage] = useState({ 1: 0, 2: 0, 3: 0 });
-  const [animationFeedback, setAnimationFeedback] = useState("");
-  const [animationInProgress, setAnimationInProgress] = useState(false);
   const timerRef = useRef(null);
 
   // Storing expressions (images)
@@ -54,6 +52,13 @@ function App() {
     18: "/src/images/em18.png",
   };
 
+  // this data will be received out of the database eventually
+  const buttons = [
+    { index: 1, name: 'Yes' },
+    { index: 2, name: 'Neutral' },
+    { index: 3, name: 'No' },
+  ]
+
   // Sound
   const [audio] = useState(new Audio("/src/sounds/feedback-sound.mp3"));
 
@@ -62,26 +67,53 @@ function App() {
     audio.play();
   };
 
-  // Shared function to handle expression update and animation
-  const handleExpressionUpdate = (answer) => {
-    if (animationInProgress) return;
-    setAnimationInProgress(true);
-    playFeedbackSound();
+  const makeRipple = (e, answer) => {
+    if (!e) return;
 
-    setExpressionIndex((prevIndex) =>
-      prevIndex < expressions.length - 1 ? prevIndex + 1 : prevIndex
-    );
-    setAnimationFeedback(answer);
+    const button = e.currentTarget;
+
+    let x = e.clientX - button.getBoundingClientRect().left;
+    let y = e.clientY - button.getBoundingClientRect().top;
+
+    let ripples = document.createElement('span');
+    ripples.style.left = x + 'px';
+    ripples.style.top = y + 'px';
+
+    switch (answer) {
+      case 1:
+        ripples.style.borderColor = 'green';
+        break;
+      case 2:
+        ripples.style.borderColor = 'orange';
+        break;
+      case 3:
+        ripples.style.borderColor = 'red';
+        break;
+      default:
+        ripples.style.borderColor = 'white';
+    }
+
+    e.target.appendChild(ripples);
 
     setTimeout(() => {
-      setAnimationFeedback("");
-      setAnimationInProgress(false);
-    }, 2000);
+      ripples.remove()
+    }, 2000)
+  }
+
+  // Shared function to handle expression update and animation
+  const handleExpressionUpdate = (e, answer) => {
+    playFeedbackSound();
+
+    makeRipple(e, answer);
+
+    setExpressionIndex((prevIndex) =>
+        prevIndex < expressions.length - 1 ? prevIndex + 1 : prevIndex
+    );
   };
 
   // Button to update the expression
-  const handleClick = (answer) => {
-    handleExpressionUpdate(answer);
+  const handleClick = (e, answer) => {
+    handleExpressionUpdate(e, answer);
   };
 
   // Reset the timer whenever the expression changes
@@ -100,59 +132,43 @@ function App() {
   // Update expressionIndex based on dataPackage
   useEffect(() => {
     if (dataPackage) {
-      handleExpressionUpdate(); // Or any other logic based on dataPackage
+      handleExpressionUpdate(null, dataPackage);
       console.log(dataPackage);
     }
   }, [dataPackage]);
 
   return (
-    <HardwareInput dataPackage={dataPackage} setDataPackage={setDataPackage}>
-      <div
-        className={`min-h-screen h-full bg-gradient-to-b from-[#FFB83C] to-[#FFEB71] ${animationFeedback}`}
-      >
-        <div className="text-4xl text-center pt-24 text-[#49437C]">
-          <h1>Every answer makes me feel better.</h1>
-          <h1>Help me be joyful!</h1>
-        </div>
+      <HardwareInput dataPackage={dataPackage} setDataPackage={setDataPackage}>
+        <div
+            className={`min-h-screen h-full bg-gradient-to-b from-[#FFB83C] to-[#FFEB71] overflow-hidden`}
+        >
+          <div className="text-4xl text-center pt-24 text-[#49437C]">
+            <h1>Every answer makes me feel better.</h1>
+            <h1>Help me be joyful!</h1>
+          </div>
 
-        <div className="flex items-end justify-center my-16 w-full mx-auto max-w-xl h-60">
-          <img
-            src={imagePaths[expressions[expressionIndex]]}
-            alt="mascot"
-            className="max-h-md"
-          />
-        </div>
+          <div className="flex items-end justify-center my-16 w-full mx-auto max-w-xl h-60">
+            <img
+                src={imagePaths[expressions[expressionIndex]]}
+                alt="mascot"
+                className="max-h-md"
+            />
+          </div>
 
-        <div className="flex justify-center gap-28">
-          <Button
-            className="bg-[#49437C] text-white px-8 py-2 rounded-xl font-light text-xl"
-            onClick={() => {
-              handleClick("animate-feedback-red");
-            }}
-          >
-            No
-          </Button>
-          <Button
-            className="bg-[#49437C] text-white px-8 py-2 rounded-xl font-light text-xl"
-            onClick={() => {
-              handleClick("animate-feedback-orange");
-              
-            }}
-          >
-            Neutral
-          </Button>
-          <Button
-            className="bg-[#49437C] text-white px-8 py-2 rounded-xl font-light text-xl"
-            onClick={() => {
-              handleClick("animate-feedback-green");
-              
-            }}
-          >
-            Yes
-          </Button>
+          <div className="flex justify-center gap-28">
+            {buttons?.map((button, buttonIdx) => (
+                <Button key={buttonIdx} ripple={false}
+                        className="btn bg-[#49437C] text-white px-8 py-2 rounded-xl font-light text-xl"
+                        onClick={(e) => {
+                          handleClick(e, button.index);
+                        }}
+                >
+                  {button.name}
+                </Button>
+            ))}
+          </div>
         </div>
-      </div>
-    </HardwareInput>
+      </HardwareInput>
   );
 }
 
