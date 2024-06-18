@@ -2,7 +2,7 @@ import {useEffect, useState, useRef} from "react";
 import "./App.css";
 import {Button} from "@material-tailwind/react";
 import HardwareInput from "./hardwareInput";
-import { motion } from 'framer-motion';
+import {motion} from 'framer-motion';
 
 function App() {
     // States and timer
@@ -164,15 +164,15 @@ function App() {
             console.log(dataPackage);
         }
     }, [dataPackage]);
-  
+
     return (
         <HardwareInput dataPackage={dataPackage} setDataPackage={setDataPackage}>
             <div
-                className={`min-h-screen h-full bg-gradient-to-b from-[#FFB83C] to-[#FFEB71] overflow-hidden`}
+                className={`min-h-screen h-full bg-gradient overflow-hidden`}
             >
                 <div className="text-4xl text-center pt-24 text-[#2c2756]">
                     <h1>Your feedback is valuable.</h1>
-          <h1>Thank you for your time!</h1>
+                    <h1>Thank you for your time!</h1>
                 </div>
 
                 <div className="flex items-end justify-center my-16 w-full mx-auto max-w-xl h-60">
@@ -183,9 +183,9 @@ function App() {
                     />
                 </div>
 
-<div className="text-4xl text-center pb-10 text-[#2c2756]">
-          <h1>Work makes me feel stressed</h1>
-        </div>
+                <div className="text-4xl text-center pb-10 text-[#2c2756]">
+                    <h1>Work makes me feel stressed</h1>
+                </div>
 
                 <div id={'rippleDiv'} className="flex justify-center gap-64">
                     {buttons?.map((button, buttonIdx) => (
@@ -195,8 +195,8 @@ function App() {
                             onClick={(e) => {
                                 handleExpressionUpdate(e, button.index);
                             }}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={{scale: 1.05}}
+                            whileTap={{scale: 0.95}}
                         >
                             {button.name}
                         </motion.button>
