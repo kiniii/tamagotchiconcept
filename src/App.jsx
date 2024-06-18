@@ -55,17 +55,25 @@ function App() {
 
     // this data will be received out of the database eventually
     const buttons = [
-        {index: 1, name: 'Yes'},
-        {index: 2, name: 'Neutral'},
-        {index: 3, name: 'No'},
+        {index: 1, name: 'Yes', emotion: 'negative'},
+        {index: 2, name: 'Neutral', emotion: 'neutral'},
+        {index: 3, name: 'No', emotion: 'positive'},
     ]
 
     // Sound
-    const [audio] = useState(new Audio("/src/sounds/feedback-sound.mp3"));
+    const playFeedbackSound = (emotion) => {
+        const sounds = {
+            positive: "/src/sounds/feedback-sound.mp3",
+            neutral: "/src/sounds/feedback-sound.mp3",
+            negative: "/src/sounds/feedback-sound.mp3"
+        };
 
-    const playFeedbackSound = () => {
-        audio.currentTime = 0;
-        audio.play();
+        const soundUrl = sounds[emotion];
+        if (soundUrl) {
+            const audio = new Audio(soundUrl);
+            audio.currentTime = 0;
+            audio.play();
+        }
     };
 
     const makeRipple = (e, answer) => {
@@ -129,19 +137,14 @@ function App() {
     }
 
     // Shared function to handle expression update and animation
-    const handleExpressionUpdate = (e, answer) => {
-        playFeedbackSound();
+    const handleExpressionUpdate = (e, answer, emotion) => {
+        playFeedbackSound(emotion);
 
         makeRipple(e, answer);
 
         setExpressionIndex((prevIndex) =>
             prevIndex < expressions.length - 1 ? prevIndex + 1 : prevIndex
         );
-    };
-
-    // Button to update the expression
-    const handleClick = (e, answer) => {
-        handleExpressionUpdate(e, answer);
     };
 
     // Reset the timer whenever the expression changes
@@ -157,10 +160,16 @@ function App() {
         return () => clearInterval(timerRef.current);
     }, [expressionIndex]);
 
+    const getEmotionFromIndex = (index) => {
+        const button = buttons.find(b => b.index === index);
+        return button ? button.emotion : null;
+    };
+
     // Update expressionIndex based on dataPackage
     useEffect(() => {
         if (dataPackage) {
-            handleExpressionUpdate(null, dataPackage);
+            const emotion = getEmotionFromIndex(dataPackage);
+            handleExpressionUpdate(null, dataPackage, emotion);
             console.log(dataPackage);
         }
     }, [dataPackage]);
@@ -193,7 +202,7 @@ function App() {
                             key={buttonIdx}
                             className="btn bg-[#49437C] text-white px-8 py-2 rounded-xl font-light text-xl"
                             onClick={(e) => {
-                                handleExpressionUpdate(e, button.index);
+                                handleExpressionUpdate(e, button.index, button.emotion);
                             }}
                             whileHover={{scale: 1.05}}
                             whileTap={{scale: 0.95}}
