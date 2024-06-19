@@ -9,6 +9,7 @@ function App() {
     const [expressionIndex, setExpressionIndex] = useState(0);
     const [dataPackage, setDataPackage] = useState(null); // Set initial state to null or a valid default
     const timerRef = useRef(null);
+    const [passScanned, setPassScanned] = useState(true);
 
     // Storing expressions (images)
     const expressions = [
@@ -38,17 +39,25 @@ function App() {
 
     // this data will be received out of the database eventually
     const buttons = [
-        { index: 1, name: 'Yes', emotion: 'negative' },
+        { index: 1, name: 'No', emotion: 'positive' },
         { index: 2, name: 'Neutral', emotion: 'neutral' },
-        { index: 3, name: 'No', emotion: 'positive' },
+        { index: 3, name: 'Yes', emotion: 'negative' },
     ];
+
+    const penguinState = [
+        'hungry',
+        'sleepy',
+        'sad',
+        'bored',
+        'thirsty'
+    ]
 
     // Sound
     const playFeedbackSound = (emotion) => {
         const sounds = {
-            positive: "/src/sounds/feedback-sound.mp3",
-            neutral: "/src/sounds/feedback-sound.mp3",
-            negative: "/src/sounds/feedback-sound.mp3"
+            positive: "/src/sounds/positive-feedback-ding.mp3",
+            neutral: "/src/sounds/neutral-feedback-ding.mp3",
+            negative: "/src/sounds/negative-feedback-ding.mp3"
         };
 
         const soundUrl = sounds[emotion];
@@ -134,6 +143,8 @@ function App() {
         setExpressionIndex((prevIndex) =>
             prevIndex < expressions.length - 1 ? prevIndex + 1 : prevIndex
         );
+
+        setPassScanned(false)
     };
 
     // Reset the timer whenever the expression changes
@@ -164,21 +175,25 @@ function App() {
 
     return (
         <HardwareInput dataPackage={dataPackage} setDataPackage={setDataPackage}>
-            <div className="min-h-screen h-full bg-gradient overflow-hidden">
-                <div className="text-4xl text-center pt-24 text-[#2c2756]">
+            <div className="min-h-screen h-full bg-gradient overflow-hidden flex flex-col gap-10 py-20">
+                <div className="text-4xl text-center text-[#2c2756]">
                     <h1>Your feedback is valuable.</h1>
                     <h1>Thank you for your time!</h1>
                 </div>
 
-                <div className="flex items-end justify-center my-16 w-full mx-auto max-w-xl h-60">
+                <div className="flex items-end justify-center w-full mx-auto max-w-xl h-60 relative">
                     <img
                         src={imagePaths[expressions[expressionIndex]]}
                         alt="mascot"
                         className="max-h-md"
                     />
+
+                    {passScanned && (
+                        <p className={'absolute top-0 right-0 max-w-40 text-right'}>Your answer helps me that i become less {penguinState[0]}</p>
+                    )}
                 </div>
 
-                <div className="text-4xl text-center pb-10 text-[#2c2756]">
+                <div className="text-4xl text-center text-[#2c2756]">
                     <h1>Work makes me feel stressed</h1>
                 </div>
 
@@ -187,16 +202,30 @@ function App() {
                         <motion.button
                             key={buttonIdx}
                             id={`button-${button.index}`}
-                            className="btn bg-[#49437C] text-white px-8 py-2 rounded-xl font-light text-xl"
+                            className={`btn ${passScanned ? 'bg-[#49437C]' : 'bg-[#49437C] opacity-80'} text-white px-8 py-2 rounded-xl font-light text-xl`}
                             onClick={(e) => {
                                 handleExpressionUpdate(e, button.index, button.emotion);
                             }}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
+                            disabled={passScanned === false}
                         >
                             {button.name}
                         </motion.button>
                     ))}
+                </div>
+
+                <div className={'flex justify-center'}>
+                    <motion.button
+                        className="btn bg-[#49437C] text-white px-8 py-2 rounded-xl font-light text-xl"
+                        onClick={() => {
+                            setPassScanned(true);
+                        }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        Scan pass
+                    </motion.button>
                 </div>
             </div>
         </HardwareInput>
