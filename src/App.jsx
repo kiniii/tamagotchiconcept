@@ -1,35 +1,18 @@
-import {useEffect, useState, useRef} from "react";
+import { useEffect, useState, useRef } from "react";
 import "./App.css";
-import {Button} from "@material-tailwind/react";
+import { Button } from "@material-tailwind/react";
 import HardwareInput from "./hardwareInput";
-import {motion} from 'framer-motion';
+import { motion } from 'framer-motion';
 
 function App() {
     // States and timer
     const [expressionIndex, setExpressionIndex] = useState(0);
-    const [dataPackage, setDataPackage] = useState({1: 0, 2: 0, 3: 0});
+    const [dataPackage, setDataPackage] = useState(null); // Set initial state to null or a valid default
     const timerRef = useRef(null);
 
     // Storing expressions (images)
     const expressions = [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "11",
-        "12",
-        "13",
-        "14",
-        "15",
-        "16",
-        "17",
-        "18",
+        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18",
     ];
 
     const imagePaths = {
@@ -55,10 +38,10 @@ function App() {
 
     // this data will be received out of the database eventually
     const buttons = [
-        {index: 1, name: 'Yes', emotion: 'negative'},
-        {index: 2, name: 'Neutral', emotion: 'neutral'},
-        {index: 3, name: 'No', emotion: 'positive'},
-    ]
+        { index: 1, name: 'Yes', emotion: 'negative' },
+        { index: 2, name: 'Neutral', emotion: 'neutral' },
+        { index: 3, name: 'No', emotion: 'positive' },
+    ];
 
     // Sound
     const playFeedbackSound = (emotion) => {
@@ -76,15 +59,19 @@ function App() {
         }
     };
 
-    const makeRipple = (e, answer) => {
+    const makeRipple = (e, answer, emotion) => {
         let x, y;
         const numericAnswer = Number(answer);
 
         if (e && e.clientX !== undefined && e.clientY !== undefined) {
             const button = e.currentTarget || e.target;
 
-            x = e.clientX - button.getBoundingClientRect().left;
-            y = e.clientY - button.getBoundingClientRect().top;
+            // Get the bounding rectangle of the button
+            const rect = button.getBoundingClientRect();
+
+            // Calculate the x and y position of the click relative to the button
+            x = e.clientX - rect.left;
+            y = e.clientY - rect.top;
         } else {
             switch (numericAnswer) {
                 case 1:
@@ -109,38 +96,40 @@ function App() {
         ripples.style.left = x + 'px';
         ripples.style.top = y + 'px';
 
-        switch (numericAnswer) {
-            case 1:
+        switch (emotion) {
+            case 'positive':
                 ripples.style.borderColor = 'green';
                 break;
-            case 2:
+            case 'neutral':
                 ripples.style.borderColor = 'orange';
                 break;
-            case 3:
+            case 'negative':
                 ripples.style.borderColor = 'red';
                 break;
             default:
                 ripples.style.borderColor = 'white';
         }
 
+        // Append the ripple to the button
         if (e && e.target) {
             e.target.appendChild(ripples);
-            console.log('Appended ripple to button');
         } else {
-            document.body.appendChild(ripples);
-            console.log('Appended ripple to body');
+            // Fallback in case event is not passed
+            const button = document.querySelector(`#button-${numericAnswer}`);
+            button.appendChild(ripples);
         }
 
         setTimeout(() => {
-            ripples.remove()
-        }, 2000)
-    }
+            ripples.remove();
+        }, 2000);
+    };
+
 
     // Shared function to handle expression update and animation
     const handleExpressionUpdate = (e, answer, emotion) => {
         playFeedbackSound(emotion);
 
-        makeRipple(e, answer);
+        makeRipple(e, answer, emotion);
 
         setExpressionIndex((prevIndex) =>
             prevIndex < expressions.length - 1 ? prevIndex + 1 : prevIndex
@@ -161,7 +150,7 @@ function App() {
     }, [expressionIndex]);
 
     const getEmotionFromIndex = (index) => {
-        const button = buttons.find(b => b.index === index);
+        const button = buttons.find((b) => b.index === Number(index));
         return button ? button.emotion : null;
     };
 
@@ -170,15 +159,12 @@ function App() {
         if (dataPackage) {
             const emotion = getEmotionFromIndex(dataPackage);
             handleExpressionUpdate(null, dataPackage, emotion);
-            console.log(dataPackage);
         }
     }, [dataPackage]);
 
     return (
         <HardwareInput dataPackage={dataPackage} setDataPackage={setDataPackage}>
-            <div
-                className={`min-h-screen h-full bg-gradient overflow-hidden`}
-            >
+            <div className="min-h-screen h-full bg-gradient overflow-hidden">
                 <div className="text-4xl text-center pt-24 text-[#2c2756]">
                     <h1>Your feedback is valuable.</h1>
                     <h1>Thank you for your time!</h1>
@@ -196,16 +182,17 @@ function App() {
                     <h1>Work makes me feel stressed</h1>
                 </div>
 
-                <div id={'rippleDiv'} className="flex justify-center gap-64">
+                <div id="rippleDiv" className="flex justify-center gap-64">
                     {buttons?.map((button, buttonIdx) => (
                         <motion.button
                             key={buttonIdx}
+                            id={`button-${button.index}`}
                             className="btn bg-[#49437C] text-white px-8 py-2 rounded-xl font-light text-xl"
                             onClick={(e) => {
                                 handleExpressionUpdate(e, button.index, button.emotion);
                             }}
-                            whileHover={{scale: 1.05}}
-                            whileTap={{scale: 0.95}}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                         >
                             {button.name}
                         </motion.button>
