@@ -4,31 +4,30 @@ With inspiration from the Tamagotchi, this is a concept that takes data from use
 # Installation
 ### Prerequisites
 - Node.js
-- npm or yarn
+- npm
+
+### Technologies used
+- Tailwind
+- Axios
+- Framer motion
 
 ### How to clone the repository
-First install npm or yarn
+First clone the repository
+<br />
+```git clone https://github.com/kiniii/tamagotchiconcept.git```
+<br />
+```cd tamagotchiconcept```
+<br />
+Afterwards install the dependencies
 <br />
 ```npm install```
-<br />
-or
-<br />
-```yarn install```
 
 # Running the project
-Run the project by running the following command (depending whether you're using npm or yarn)
+Run the project by running the following command
 <br />
 ```npm run dev```
-<br />
-or
-<br />
-```yarn dev```
 
 # Building the project
-Build the project by running the following command (once again, depending whether you're using npm or yarn)
+Build the project by running the following command
 <br />
 ```npm run build```
-<br />
-or
-<br />
-```yarn build```
