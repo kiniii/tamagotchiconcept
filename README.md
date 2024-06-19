@@ -1,8 +1,34 @@
-# React + Vite
+# Samen aan Z - Tamagotchi Concept 
+With inspiration from the Tamagotchi, this is a concept that takes data from users in an interactive and quick way.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Installation
+### Prerequisites
+- Node.js
+- npm or yarn
 
-Currently, two official plugins are available:
+### How to clone the repository
+First install npm or yarn
+<br />
+```npm install```
+<br />
+or
+<br />
+```yarn install```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Running the project
+Run the project by running the following command (depending whether you're using npm or yarn)
+<br />
+```npm run dev```
+<br />
+or
+<br />
+```yarn dev```
+
+# Building the project
+Build the project by running the following command (once again, depending whether you're using npm or yarn)
+<br />
+```npm run build```
+<br />
+or
+<br />
+```yarn build```
